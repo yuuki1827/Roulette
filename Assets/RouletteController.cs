@@ -5,20 +5,45 @@ using UnityEngine;
 public class RouletteController : MonoBehaviour
 {
     // 回転速度
-    float rotSpeed = 0;
+    float rotSpeed;
+
+    // 切り替え判定
+    bool stop;
 
     void Start()
     {
-        
+        // 回転速度(初期値)
+        rotSpeed = 0;
+
+        // 切り替え判定(初期値は停止)
+        stop = true;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        // マウスが押されたら回転速度を設定する
+
+        // 左クリックをしたら回転に切り替える
         if (Input.GetMouseButtonDown(0))
         {
-            this.rotSpeed = 10;
+            stop = false;
+        }
+        // 右クリックをしたら停止に切り替える
+        else if (Input.GetMouseButtonDown(1))
+        {
+            stop = true;
+        }
+
+        // 回転・減速処理
+        switch (stop)
+        {
+            // 判定が「回転」の場合
+            case false:        
+                this.rotSpeed = 20;
+                break;
+            // 判定が「停止」の場合
+            case true:
+                this.rotSpeed *= 0.96f;
+                break;
         }
 
         /*
@@ -35,7 +60,10 @@ public class RouletteController : MonoBehaviour
          * (X軸回転, Y軸回転, Z軸回転)
          */
 
-        // ルーレットを減速させる
-        this.rotSpeed *= 0.96f;
+        // 停止と初期化
+        if (rotSpeed < 0.01)
+        {
+            Start();
+        }
     }
 }
